@@ -60,23 +60,8 @@ export function Wizard() {
             : `Stap ${currentStep + 1} van ${steps.length} — ${step.title}`}
         </CardDescription>
         {/* Progress */}
-        <div className="pt-3 space-y-2">
+        <div className="pt-3">
           <Progress value={progress} className="h-1.5" />
-          {!showResult && (
-            <div className="flex gap-1">
-              {steps.map((_, i) => (
-                <div
-                  key={i}
-                  className={[
-                    "h-1 flex-1 rounded-full transition-colors",
-                    i < currentStep ? "bg-blue-400" :
-                    i === currentStep ? "bg-blue-600" :
-                    "bg-muted"
-                  ].join(" ")}
-                />
-              ))}
-            </div>
-          )}
         </div>
       </CardHeader>
 
