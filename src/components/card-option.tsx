@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import type { Option } from "@/lib/questions";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   Globe,
@@ -52,14 +53,15 @@ export function CardOption({ option, selected, onSelect }: CardOptionProps) {
   const Icon = option.icon ? iconMap[option.icon] : null;
 
   return (
-    <button
+    <Button
       type="button"
       onClick={onSelect}
+      variant="outline"
       className={cn(
-        "flex flex-col items-start gap-2 rounded-lg border-2 p-4 text-left transition-all hover:bg-blue-50/50",
+        "flex flex-col items-start gap-2 rounded-lg p-4 text-left transition-all hover:bg-blue-50/50",
         selected
-          ? "border-blue-500 bg-blue-50"
-          : "border-border bg-card"
+          ? "border-blue-500 bg-blue-50 text-blue-700"
+          : "border-border bg-card text-foreground"
       )}
     >
       {Icon && (
@@ -78,6 +80,6 @@ export function CardOption({ option, selected, onSelect }: CardOptionProps) {
           </div>
         )}
       </div>
-    </button>
+    </Button>
   );
 }

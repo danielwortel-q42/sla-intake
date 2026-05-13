@@ -3,6 +3,9 @@
 import type { Question } from "@/lib/questions";
 import { CardOption } from "./card-option";
 import { PillOption } from "./pill-option";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 
 interface QuestionGroupProps {
   question: Question;
@@ -25,49 +28,56 @@ export function QuestionGroup({
     question.contextField.triggerValues.includes(value);
 
   return (
-    <div className="space-y-3">
-      <label className="text-sm font-medium text-foreground">
-        {question.label}
-      </label>
-      {question.type === "card" ? (
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-          {question.options.map((opt) => (
-            <CardOption
-              key={opt.value}
-              option={opt}
-              selected={value === opt.value}
-              onSelect={() => onChange(question.key, opt.value)}
+    <Card className="space-y-3">
+      <CardHeader className="px-4 pb-0">
+        <CardTitle className="text-sm text-foreground">
+          {question.label}
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-3 px-4 pt-0">
+        {question.type === "card" ? (
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+            {question.options.map((opt) => (
+              <CardOption
+                key={opt.value}
+                option={opt}
+                selected={value === opt.value}
+                onSelect={() => onChange(question.key, opt.value)}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="flex flex-wrap gap-2">
+            {question.options.map((opt) => (
+              <PillOption
+                key={opt.value}
+                option={opt}
+                selected={value === opt.value}
+                onSelect={() => onChange(question.key, opt.value)}
+              />
+            ))}
+          </div>
+        )}
+        {showContext && question.contextField && (
+          <div className="space-y-1.5 pt-1">
+            <Label
+              htmlFor={`${question.key}-context`}
+              className="text-xs text-muted-foreground"
+            >
+              {question.contextField.label}
+            </Label>
+            <Textarea
+              id={`${question.key}-context`}
+              rows={2}
+              placeholder={question.contextField.placeholder}
+              value={contextValue ?? ""}
+              onChange={(e) =>
+                onContextChange(`${question.key}_context`, e.target.value)
+              }
             />
-          ))}
-        </div>
-      ) : (
-        <div className="flex flex-wrap gap-2">
-          {question.options.map((opt) => (
-            <PillOption
-              key={opt.value}
-              option={opt}
-              selected={value === opt.value}
-              onSelect={() => onChange(question.key, opt.value)}
-            />
-          ))}
-        </div>
-      )}
-      {showContext && question.contextField && (
-        <div className="space-y-1.5 pt-1">
-          <label className="text-xs font-medium text-muted-foreground">
-            {question.contextField.label}
-          </label>
-          <textarea
-            className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring resize-none"
-            rows={2}
-            placeholder={question.contextField.placeholder}
-            value={contextValue ?? ""}
-            onChange={(e) =>
-              onContextChange(`${question.key}_context`, e.target.value)
-            }
-          />
-        </div>
-      )}
-    </div>
+          </div>
+        )}
+      </CardContent>
+    </Card>
   );
 }

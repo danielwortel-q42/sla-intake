@@ -2,6 +2,7 @@
 
 import type { Option } from "@/lib/questions";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 
 interface PillOptionProps {
   option: Option;
@@ -11,17 +12,14 @@ interface PillOptionProps {
 
 export function PillOption({ option, selected, onSelect }: PillOptionProps) {
   return (
-    <button
+    <Button
       type="button"
+      size="sm"
+      variant={selected ? "secondary" : "outline"}
       onClick={onSelect}
-      className={cn(
-        "rounded-full border-2 px-4 py-2 text-sm font-medium transition-all hover:bg-blue-50/50",
-        selected
-          ? "border-blue-500 bg-blue-50 text-blue-700"
-          : "border-border bg-card text-foreground"
-      )}
+      className="rounded-full px-4 py-2 text-sm font-medium transition-all"
     >
       {option.label}
-    </button>
+    </Button>
   );
 }
