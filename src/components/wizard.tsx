@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { steps } from "@/lib/questions";
@@ -26,27 +26,18 @@ export function Wizard() {
     setAnswers((prev) => ({ ...prev, [key]: value }));
   }, []);
 
-  const stepComplete =
-    step?.questions.every((q) => answers[q.key] !== undefined) ?? false;
+  const stepComplete = step?.questions.every((q) => answers[q.key] !== undefined) ?? false;
   const isLastStep = currentStep === steps.length - 1;
-  const progress = showResult
-    ? 100
-    : ((currentStep + 1) / (steps.length + 1)) * 100;
+  const progress = showResult ? 100 : ((currentStep + 1) / (steps.length + 1)) * 100;
 
   function handleNext() {
-    if (isLastStep) {
-      setShowResult(true);
-    } else {
-      setCurrentStep((s) => s + 1);
-    }
+    if (isLastStep) setShowResult(true);
+    else setCurrentStep((s) => s + 1);
   }
 
   function handleBack() {
-    if (showResult) {
-      setShowResult(false);
-    } else {
-      setCurrentStep((s) => Math.max(0, s - 1));
-    }
+    if (showResult) setShowResult(false);
+    else setCurrentStep((s) => Math.max(0, s - 1));
   }
 
   function handleReset() {
@@ -56,35 +47,40 @@ export function Wizard() {
   }
 
   const result = showResult ? calculateScores(answers) : null;
-  const summaryText = result
-    ? generateSummaryText(answers, result, steps)
-    : "";
+  const summaryText = result ? generateSummaryText(answers, result, steps) : "";
 
   return (
-    <Card className="w-full max-w-2xl mx-auto">
-      <CardContent className="space-y-8">
-        <div className="mb-8">
+    <Card className="w-full max-w-2xl shadow-sm">
+      {/* Header */}
+      <CardHeader className="pb-4 border-b">
+        <CardTitle className="text-xl font-bold">SLA Intake Tool</CardTitle>
+        <CardDescription>
+          {showResult
+            ? "Op basis van de antwoorden is onderstaand advies gegenereerd."
+            : `Stap ${currentStep + 1} van ${steps.length} — ${step.title}`}
+        </CardDescription>
+        {/* Progress */}
+        <div className="pt-3 space-y-2">
           <Progress value={progress} className="h-1.5" />
           {!showResult && (
-            <div className="flex justify-between mt-2">
-              {steps.map((s, i) => (
-                <span
-                  key={s.title}
-                  className={`text-xs ${
-                    i === currentStep
-                      ? "text-foreground font-medium"
-                      : i < currentStep
-                        ? "text-muted-foreground"
-                        : "text-muted-foreground/50"
-                  }`}
-                >
-                  {i + 1}. {s.title}
-                </span>
+            <div className="flex gap-1">
+              {steps.map((_, i) => (
+                <div
+                  key={i}
+                  className={[
+                    "h-1 flex-1 rounded-full transition-colors",
+                    i < currentStep ? "bg-blue-400" :
+                    i === currentStep ? "bg-blue-600" :
+                    "bg-muted"
+                  ].join(" ")}
+                />
               ))}
             </div>
           )}
         </div>
+      </CardHeader>
 
+      <CardContent className="pt-6 pb-6">
         {showResult && result ? (
           <ResultScreen
             result={result}
@@ -97,10 +93,7 @@ export function Wizard() {
         ) : (
           <>
             <div className="mb-6">
-              <h2 className="text-xl font-semibold">{step.title}</h2>
-              <p className="text-sm text-muted-foreground mt-1">
-                {step.subtitle}
-              </p>
+              <h2 className="text-base font-semibold text-foreground">{step.subtitle}</h2>
             </div>
 
             <div className="space-y-6">
@@ -116,12 +109,8 @@ export function Wizard() {
               ))}
             </div>
 
-            <div className="flex justify-between mt-8">
-              <Button
-                variant="outline"
-                onClick={handleBack}
-                disabled={currentStep === 0}
-              >
+            <div className="flex justify-between mt-8 pt-6 border-t">
+              <Button variant="outline" onClick={handleBack} disabled={currentStep === 0}>
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Vorige
               </Button>
